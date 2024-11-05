@@ -1,5 +1,6 @@
 package com.smallUrl.small_url.controller;
 
+import com.smallUrl.small_url.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,14 @@ public class GenerateController {
 	
 	@Autowired
 	UrlService urlService;
-	
+	@Autowired
+	ResponseDTO responseDTO;
+
 	@PostMapping("/generate")
-	public ResponseEntity<UrlEntity> generateUrl(@RequestParam String originalUrl) {
-		UrlEntity urlEntity = urlService.generateShorternUrl(originalUrl);
+	public ResponseEntity<ResponseDTO> generateUrl(@RequestParam String originalUrl) {
+		ResponseDTO urlEntity = urlService.generateShortUrl(originalUrl);
 		
-		return new ResponseEntity<UrlEntity>(urlEntity, HttpStatusCode.valueOf(200));
+		return ResponseEntity.ok(responseDTO);
 	}
 	
 	

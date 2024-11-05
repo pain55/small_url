@@ -1,5 +1,6 @@
 package com.smallUrl.small_url.service;
 
+import com.smallUrl.small_url.dto.ResponseDTO;
 import org.springframework.stereotype.Service;
 
 import com.smallUrl.small_url.entity.UrlEntity;
@@ -7,5 +8,5 @@ import com.smallUrl.small_url.entity.UrlEntity;
 @Service
 public interface UrlService {
 	
-	public UrlEntity generateShorternUrl(String originalUrl);
+	public ResponseDTO generateShortUrl(String originalUrl);
 }

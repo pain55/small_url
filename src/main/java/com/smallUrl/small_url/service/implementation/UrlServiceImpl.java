@@ -2,6 +2,8 @@ package com.smallUrl.small_url.service.implementation;
 
 import java.util.Random;
 
+import com.smallUrl.small_url.config.UrlConfig;
+import com.smallUrl.small_url.dto.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,25 +19,34 @@ public class UrlServiceImpl implements UrlService{
 	
 	@Autowired
 	UrlEntity urlEntity;
+
+	@Autowired
+	UrlConfig urlConfig;
+
+	@Autowired
+	ResponseDTO responseDTO;
 	
 	@Override
-	public UrlEntity generateShorternUrl(String originalUrl) {
-		final int shortUrlLength = 6;
-		final String urlHash = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	public ResponseDTO generateShortUrl(String originalUrl) {
+
+
 		final Random random = new Random();
 		StringBuffer shortUrl = new StringBuffer("www.shortUrl.com/");
 		
 		
-		for(int i=0 ; i<shortUrlLength ; i++) {
-			int randomIndex = random.nextInt(urlHash.length());
-			shortUrl.append(urlHash.charAt(randomIndex));
+		for(int i=0 ; i<urlConfig.getShortUrlLength() ; i++) {
+			int randomIndex = random.nextInt(urlConfig.getUrlHash().length());
+			shortUrl.append(urlConfig.getUrlHash().charAt(randomIndex));
 		}
 		
 		urlEntity.setOriginalUrl(originalUrl);
 		urlEntity.setSmallUrl(shortUrl.toString());
+		responseDTO.setShortUrl(shortUrl.toString());
+
+
 		
 		
-		return urlEntity;
+		return responseDTO;
 		
 		
 	}
