@@ -10,6 +10,4 @@ public class UrlConfig {
     private @Getter static final String urlHash = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 
-
-
 }

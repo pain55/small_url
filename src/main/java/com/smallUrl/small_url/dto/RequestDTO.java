@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component;
 public class RequestDTO {
     private  String userID;
     private  String originalUrl;
-    private String shortUrl;
+    private String smallUrl;
 }

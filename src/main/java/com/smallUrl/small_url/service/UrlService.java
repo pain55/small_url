@@ -8,5 +8,7 @@ import com.smallUrl.small_url.entity.UrlEntity;
 @Service
 public interface UrlService {
 	
-	public ResponseDTO generateShortUrl(String originalUrl);
+	public ResponseDTO generateShortUrl() throws UrlFoundException;
+
+	public ResponseDTO getOriginalUrl() throws UrlNotFoundException;
 }

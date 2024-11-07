@@ -1,15 +1,17 @@
 package com.smallUrl.small_url.controller;
 
+import com.smallUrl.small_url.dto.RequestDTO;
 import com.smallUrl.small_url.dto.ResponseDTO;
+import com.smallUrl.small_url.service.UrlFoundException;
+import com.smallUrl.small_url.service.UrlNotFoundException;
+import com.smallUrl.small_url.service.UrlService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.smallUrl.small_url.entity.UrlEntity;
-import com.smallUrl.small_url.service.UrlService;
 
 @RestController
 public class GenerateController {
@@ -17,15 +19,27 @@ public class GenerateController {
 	@Autowired
 	UrlService urlService;
 	@Autowired
+	RequestDTO requestDTO;
+	@Autowired
 	ResponseDTO responseDTO;
 
 	@PostMapping("/generate")
-	public ResponseEntity<ResponseDTO> generateUrl(@RequestParam String originalUrl) {
-		ResponseDTO urlEntity = urlService.generateShortUrl(originalUrl);
+	public ResponseEntity<ResponseDTO> generateUrl(@RequestParam(required = true) String originalUrl, @RequestParam(required = false) String userId) throws UrlFoundException {
+		requestDTO.setOriginalUrl(originalUrl);
+		requestDTO.setUserID(userId);
+
+		responseDTO = urlService.generateShortUrl();
 		
 		return ResponseEntity.ok(responseDTO);
 	}
-	
+
+
+	@GetMapping("/")
+	public ResponseEntity<ResponseDTO> getOriginalUrl(@RequestParam String smallUrl) throws UrlNotFoundException {
+		requestDTO.setSmallUrl(smallUrl);
+		responseDTO = urlService.getOriginalUrl();
+		return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(responseDTO);
+	}
 	
 	
 }

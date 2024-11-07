@@ -6,5 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ResponseDTO {
-    private @Getter @Setter String shortUrl;
+    private @Getter @Setter String smallUrl;
+    private @Getter @Setter String originalUrl;
 }
