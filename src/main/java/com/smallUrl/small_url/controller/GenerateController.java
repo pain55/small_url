@@ -27,8 +27,12 @@ public class GenerateController {
 	public ResponseEntity<ResponseDTO> generateUrl(@RequestParam(required = true) String originalUrl, @RequestParam(required = false) String userId) throws UrlFoundException {
 		requestDTO.setOriginalUrl(originalUrl);
 		requestDTO.setUserID(userId);
-
-		responseDTO = urlService.generateShortUrl();
+		try {
+			responseDTO = urlService.generateShortUrl();
+		}
+		catch (UrlFoundException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(responseDTO);
+		}
 		
 		return ResponseEntity.ok(responseDTO);
 	}
@@ -37,7 +41,15 @@ public class GenerateController {
 	@GetMapping("/")
 	public ResponseEntity<ResponseDTO> getOriginalUrl(@RequestParam String smallUrl) throws UrlNotFoundException {
 		requestDTO.setSmallUrl(smallUrl);
+		try{
+
 		responseDTO = urlService.getOriginalUrl();
+		}
+		catch (UrlNotFoundException e) {
+
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+
 		return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(responseDTO);
 	}
 	
