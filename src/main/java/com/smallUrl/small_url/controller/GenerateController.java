@@ -28,7 +28,7 @@ public class GenerateController {
 		requestDTO.setOriginalUrl(originalUrl);
 		requestDTO.setUserID(userId);
 		try {
-			responseDTO = urlService.generateShortUrl();
+			responseDTO = urlService.generateShortUrl(originalUrl);
 		}
 		catch (UrlFoundException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(responseDTO);
@@ -43,7 +43,7 @@ public class GenerateController {
 		requestDTO.setSmallUrl(smallUrl);
 		try{
 
-		responseDTO = urlService.getOriginalUrl();
+		responseDTO = urlService.getOriginalUrl(smallUrl);
 		}
 		catch (UrlNotFoundException e) {
 

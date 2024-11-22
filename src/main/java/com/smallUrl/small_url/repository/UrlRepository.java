@@ -4,10 +4,13 @@ import com.smallUrl.small_url.entity.UrlEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UrlRepository extends JpaRepository<UrlEntity, Long> {
 
-    UrlEntity findByOriginalUrl(String originalUrl)  ;
-    UrlEntity findBySmallUrl(String smallUrl);
+    Optional<UrlEntity> findByOriginalUrl(String originalUrl);
+    Optional<UrlEntity> findByOriginalUrlAndUserId(String originalUrl, String userId);
+    Optional<UrlEntity> findBySmallUrl(String smallUrl);
 
 }

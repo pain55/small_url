@@ -1,24 +1,26 @@
 package com.smallUrl.small_url.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.stereotype.Component;
+import jakarta.persistence.*;
+import lombok.*;
 
-import lombok.NoArgsConstructor;
 
+@Data
 @Entity
-@Getter @Setter @NoArgsConstructor
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@Table(name = "url_entity")
 public class UrlEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "url_id")
 	private long urlId;
 
+	@Column(name = "user_id")
 	private String userId;
+	@Column(name = "original_url")
 	private String originalUrl;
+	@Column(name = "small_url")
 	private String smallUrl;
 
 

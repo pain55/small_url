@@ -33,12 +33,11 @@ public class UrlServiceImpl implements UrlService{
 	UrlRepository urlRepository;
 	
 	@Override
-	public ResponseDTO generateShortUrl() throws UrlFoundException {
+	public ResponseDTO generateShortUrl(String originalUrl) throws UrlFoundException {
 
 //		Getting the user from DB.
 
-		UrlEntity urlEntity = urlRepository.findByOriginalUrl(requestDTO.getOriginalUrl());
-
+		UrlEntity urlEntity = urlRepository.findByOriginalUrl(requestDTO.getOriginalUrl()).get();
 
 
 //		checking if the original url already exist in db and userId is same.
@@ -64,7 +63,6 @@ public class UrlServiceImpl implements UrlService{
 			}
 			if(!containsSmallUrl(newSmallUrl.toString()))
 				break;
-//
 		}
 
 		System.out.println(requestDTO.getUserID());
@@ -84,9 +82,9 @@ public class UrlServiceImpl implements UrlService{
 	}
 
 	@Override
-	public ResponseDTO getOriginalUrl() throws UrlNotFoundException {
+	public ResponseDTO getOriginalUrl(String smallUrl) throws UrlNotFoundException {
 
-			UrlEntity urlEntity = urlRepository.findBySmallUrl(requestDTO.getSmallUrl());
+			UrlEntity urlEntity = urlRepository.findBySmallUrl(requestDTO.getSmallUrl()).get();
 			if(urlEntity == null)
 				throw new UrlNotFoundException();
 			responseDTO.setOriginalUrl(urlEntity.getOriginalUrl());
