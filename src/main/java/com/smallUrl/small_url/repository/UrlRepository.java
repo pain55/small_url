@@ -13,4 +13,5 @@ public interface UrlRepository extends JpaRepository<UrlEntity, Long> {
     Optional<UrlEntity> findByOriginalUrlAndUserId(String originalUrl, String userId);
     Optional<UrlEntity> findBySmallUrl(String smallUrl);
 
+
 }

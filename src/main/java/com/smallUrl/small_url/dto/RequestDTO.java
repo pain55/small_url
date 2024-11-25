@@ -1,12 +1,16 @@
 package com.smallUrl.small_url.dto;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-@Getter @Setter @NoArgsConstructor
+@Data
 @Component
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RequestDTO {
     private  String userID;
     private  String originalUrl;

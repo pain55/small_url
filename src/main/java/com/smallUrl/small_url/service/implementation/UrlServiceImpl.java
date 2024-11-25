@@ -11,17 +11,12 @@ import com.smallUrl.small_url.service.UrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Random;
 
 
 @Service
 public class UrlServiceImpl implements UrlService{
-
-
-
-
-	@Autowired
-	RequestDTO requestDTO;
 
 	@Autowired
 	UrlConfig urlConfig;
@@ -33,25 +28,17 @@ public class UrlServiceImpl implements UrlService{
 	UrlRepository urlRepository;
 	
 	@Override
-	public ResponseDTO generateShortUrl(String originalUrl) throws UrlFoundException {
-
-//		Getting the user from DB.
-
-		UrlEntity urlEntity = urlRepository.findByOriginalUrl(requestDTO.getOriginalUrl()).get();
+	public ResponseDTO generateShortUrl(RequestDTO requestDTO) throws UrlFoundException {
 
 
-//		checking if the original url already exist in db and userId is same.
-//		if yes -> we return exception has already exist
-//		else -> we create new tuple.
-//		we will write proper exception handling for this edge case.
+//		If given Original Url already exit in db on this user then we throw UrlFoundException.
 
-		if( urlEntity != null && requestDTO.getUserID()!=null && requestDTO.getUserID().equals(urlEntity.getUserId())) {
-			System.out.println("The original url already exist!!!!!!");
+		if(urlRepository.findByOriginalUrlAndUserId(requestDTO.getOriginalUrl(), requestDTO.getUserID()).isPresent()){
+			System.out.println("The Original Url already exist for userId");
 			throw new UrlFoundException();
 		}
 
-		if(urlEntity==null)
-			urlEntity = new UrlEntity();
+
 
 		final Random random = new Random();
 		StringBuffer newSmallUrl = new StringBuffer("www.shortUrl.com/");
@@ -61,11 +48,12 @@ public class UrlServiceImpl implements UrlService{
 				int randomIndex = random.nextInt(urlConfig.getUrlHash().length());
 				newSmallUrl.append(urlConfig.getUrlHash().charAt(randomIndex));
 			}
-			if(!containsSmallUrl(newSmallUrl.toString()))
+			if( urlRepository.findBySmallUrl(newSmallUrl.toString()).isEmpty() )
 				break;
 		}
 
-		System.out.println(requestDTO.getUserID());
+
+		UrlEntity urlEntity = new UrlEntity();
 
 //		mapping it to userEntity
 		urlEntity.setUserId(requestDTO.getUserID());
@@ -73,6 +61,7 @@ public class UrlServiceImpl implements UrlService{
 		urlEntity.setSmallUrl(newSmallUrl.toString());
 		urlRepository.save(urlEntity);
 
+		responseDTO = new ResponseDTO();
 //		sending response
 		responseDTO.setSmallUrl(newSmallUrl.toString());
 		responseDTO.setOriginalUrl(requestDTO.getOriginalUrl());
@@ -82,12 +71,17 @@ public class UrlServiceImpl implements UrlService{
 	}
 
 	@Override
-	public ResponseDTO getOriginalUrl(String smallUrl) throws UrlNotFoundException {
+	public ResponseDTO getOriginalUrl(RequestDTO requestDTO) throws UrlNotFoundException {
 
-			UrlEntity urlEntity = urlRepository.findBySmallUrl(requestDTO.getSmallUrl()).get();
-			if(urlEntity == null)
+			Optional<UrlEntity> urlEntity = urlRepository.findBySmallUrl(requestDTO.getSmallUrl());
+
+//			If it returns an empty object then throw UrlNotFoundException
+			if(urlEntity.isEmpty())
 				throw new UrlNotFoundException();
-			responseDTO.setOriginalUrl(urlEntity.getOriginalUrl());
+
+//			Creating a responseDTO instance to set values and return it
+			responseDTO = new ResponseDTO();
+			responseDTO.setOriginalUrl((urlEntity.get()).getOriginalUrl());
 			responseDTO.setSmallUrl(requestDTO.getSmallUrl());
 
 			return responseDTO;
@@ -96,8 +90,5 @@ public class UrlServiceImpl implements UrlService{
 
 
 
-	private boolean containsSmallUrl(String smallUrl) {
-		return urlRepository.findBySmallUrl(smallUrl) != null;
-	}
 
 }
